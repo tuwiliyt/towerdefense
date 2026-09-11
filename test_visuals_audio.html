@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zombie Tower Defense - Visual FX, Pixel Graphics & Web Audio Test Suite</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #121417;
+      color: #e0e4eb;
+      font-family: "Courier New", monospace;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      font-size: 20px;
+      color: #ffd13b;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #8c939e;
+      margin-bottom: 12px;
+    }
+    #gameWrapper {
+      position: relative;
+      border: 3px solid #3c4046;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+      background: #000;
+    }
+    canvas {
+      display: block;
+      width: 1024px;
+      height: 576px;
+      image-rendering: pixelated;
+      cursor: crosshair;
+    }
+    .control-panel {
+      margin-top: 14px;
+      width: 1024px;
+      background: #1c1f24;
+      border: 2px solid #2f343c;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .row-label {
+      font-weight: bold;
+      font-size: 12px;
+      color: #f39c12;
+      width: 120px;
+    }
+    button {
+      background: #2b3038;
+      color: #edf2fa;
+      border: 1px solid #4a515c;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.1s ease;
+    }
+    button:hover {
+      background: #3e4652;
+      border-color: #ffd13b;
+      color: #ffd13b;
+    }
+    button:active {
+      transform: translateY(1px);
+    }
+    .btn-red { border-color: #e74c3c; color: #ff8888; }
+    .btn-blue { border-color: #3498db; color: #88ccff; }
+    .btn-green { border-color: #2ecc71; color: #88ffaa; }
+    .btn-orange { border-color: #e67e22; color: #ffbb77; }
+    .btn-gold { border-color: #f1c40f; color: #ffe877; }
+    .instructions {
+      font-size: 11px;
+      color: #717782;
+      text-align: center;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Zombie Tower Defense - Visual FX & Web Audio Harness</h1>
+  <div class="subtitle">Pixel-Art Apocalyptic City • Persistent Gore Canvas • Procedural Sound Synthesis</div>
+
+  <div id="gameWrapper">
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+  </div>
+
+  <div class="control-panel">
+    <!-- Visual FX Controls -->
+    <div class="button-row">
+      <div class="row-label">VISUAL FX:</div>
+      <button class="btn-red" id="btnSplatter">Blood Splatter</button>
+      <button class="btn-red" id="btnGibs">Severed Gibs</button>
+      <button class="btn-orange" id="btnExplosion">Detonation Blast</button>
+      <button class="btn-blue" id="btnTesla">Tesla Lightning Arc</button>
+      <button class="btn-orange" id="btnFlame">Flametrost Cone</button>
+      <button class="btn-gold" id="btnGatling">Last Stand Gatling</button>
+      <button class="btn-green" id="btnNumbers">Damage Numbers</button>
+      <button id="btnClearGore">Clear Gore Layer</button>
+    </div>
+
+    <!-- Web Audio Controls -->
+    <div class="button-row">
+      <div class="row-label">WEB AUDIO:</div>
+      <button class="btn-gold" id="sndPistol">Gunshot</button>
+      <button class="btn-gold" id="sndShotgun">Shotgun</button>
+      <button class="btn-gold" id="sndSniper">Heavy Sniper</button>
+      <button class="btn-orange" id="sndRocket">Rocket Launch</button>
+      <button class="btn-red" id="sndBoom">Heavy Explosion</button>
+      <button class="btn-blue" id="sndTesla">Tesla Zap</button>
+      <button class="btn-orange" id="sndFlame">Flame Hiss</button>
+      <button class="btn-green" id="sndGroan">Zombie Groan</button>
+      <button class="btn-red" id="sndSplat">Death Splatter</button>
+      <button class="btn-gold" id="sndHorn">Wave Horn</button>
+      <button class="btn-gold" id="sndCoin">Coin Ding</button>
+      <button class="btn-red" id="sndAlarm">Base Klaxon</button>
+      <button class="btn-green" id="sndUpgrade">Upgrade Chime</button>
+    </div>
+
+    <!-- Simulation Mode -->
+    <div class="button-row">
+      <div class="row-label">AUTO-TEST:</div>
+      <button class="btn-green" id="btnToggleSim">▶ Start Carnage Simulation</button>
+      <button id="btnToggleMute">🔊 Mute Audio</button>
+      <span style="font-size:11px; color:#8c939e; margin-left: 10px;">Click canvas to shoot & splat at cursor position!</span>
+    </div>
+  </div>
+
+  <div class="instructions">
+    Native Resolution: 1280x720 • Crisp 2D Pixel-Art Aesthetics • 100% Procedural Audio via Web Audio API
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/map.js"></script>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const sound = new SoundFX();
+    const fx = new FXSystem(1280, 720);
+    const gameMap = new GameMap(1280, 720);
+
+    let simActive = false;
+    let lastTime = performance.now();
+
+    // Initial battlefield gore stains
+    fx.addBloodPool(560, 380, 22, '#660202');
+    fx.addBloodPool(715, 400, 26, '#750404');
+    fx.addBloodPool(885, 265, 20, '#590101');
+    for (let i = 0; i < 15; i++) {
+      const rx = 400 + Math.random() * 500;
+      const ry = 220 + Math.random() * 300;
+      fx.addBloodSplatter(rx, ry, { count: 12 });
+    }
+
+    // UI Buttons
+    document.getElementById('btnSplatter').addEventListener('click', () => {
+      sound.playZombieSplatter();
+      fx.addBloodSplatter(600 + Math.random() * 200, 300 + Math.random() * 150, { count: 18 });
+    });
+
+    document.getElementById('btnGibs').addEventListener('click', () => {
+      sound.playZombieSplatter();
+      fx.createZombieDismemberment(650 + Math.random() * 150, 350 + Math.random() * 100, 6);
+    });
+
+    document.getElementById('btnExplosion').addEventListener('click', () => {
+      const x = 600 + Math.random() * 200;
+      const y = 250 + Math.random() * 200;
+      sound.playExplosion(1.3);
+      fx.createExplosion(x, y, 55, { count: 35, hasGore: true });
+    });
+
+    document.getElementById('btnTesla').addEventListener('click', () => {
+      sound.playTeslaZap();
+      fx.createTeslaArc(605, 610, 560 + Math.random() * 100, 420 + Math.random() * 80, { branches: 3, duration: 0.25 });
+    });
+
+    document.getElementById('btnFlame').addEventListener('click', () => {
+      sound.playFlamethrower();
+      fx.createFlameCone(505, 195, 0.45, 180, 0.4, 30);
+    });
+
+    document.getElementById('btnGatling').addEventListener('click', () => {
+      sound.playGunshot('gatling');
+      gameMap.setLastStandState(-Math.PI * 0.72, true);
+      fx.createMuzzleFlash(1160, 460, -Math.PI * 0.72, 26);
+      fx.createBulletCasing(1160, 460, -Math.PI * 0.72, 'heavy');
+      setTimeout(() => gameMap.setLastStandState(-Math.PI * 0.72, false), 200);
+    });
+
+    document.getElementById('btnNumbers').addEventListener('click', () => {
+      const numbers = [461, 250, 131, 80, 336, 43, 182, 363];
+      const types = ['crit', 'crit', 'fire', 'toxic', 'crit', 'physical', 'crit', 'toxic'];
+      const idx = Math.floor(Math.random() * numbers.length);
+      fx.spawnDamageText(600 + Math.random() * 200, 300 + Math.random() * 150, numbers[idx], types[idx], types[idx] === 'crit');
+    });
+
+    document.getElementById('btnClearGore').addEventListener('click', () => {
+      fx.clearGore();
+    });
+
+    // Sound buttons
+    document.getElementById('sndPistol').addEventListener('click', () => sound.playGunshot('pistol'));
+    document.getElementById('sndShotgun').addEventListener('click', () => sound.playGunshot('shotgun'));
+    document.getElementById('sndSniper').addEventListener('click', () => sound.playGunshot('sniper'));
+    document.getElementById('sndRocket').addEventListener('click', () => sound.playRocketLaunch());
+    document.getElementById('sndBoom').addEventListener('click', () => sound.playExplosion(1.4));
+    document.getElementById('sndTesla').addEventListener('click', () => sound.playTeslaZap());
+    document.getElementById('sndFlame').addEventListener('click', () => sound.playFlamethrower());
+    document.getElementById('sndGroan').addEventListener('click', () => sound.playZombieGroan());
+    document.getElementById('sndSplat').addEventListener('click', () => sound.playZombieSplatter());
+    document.getElementById('sndHorn').addEventListener('click', () => sound.playWaveStartHorn());
+    document.getElementById('sndCoin').addEventListener('click', () => sound.playCoin());
+    document.getElementById('sndAlarm').addEventListener('click', () => sound.playBaseAlarm());
+    document.getElementById('sndUpgrade').addEventListener('click', () => sound.playUpgrade());
+
+    const muteBtn = document.getElementById('btnToggleMute');
+    muteBtn.addEventListener('click', () => {
+      const muted = sound.toggleMute();
+      muteBtn.textContent = muted ? '🔇 Unmute Audio' : '🔊 Mute Audio';
+    });
+
+    const simBtn = document.getElementById('btnToggleSim');
+    simBtn.addEventListener('click', () => {
+      simActive = !simActive;
+      simBtn.textContent = simActive ? '⏹ Stop Simulation' : '▶ Start Carnage Simulation';
+      simBtn.style.borderColor = simActive ? '#e74c3c' : '#2ecc71';
+    });
+
+    // Interactive canvas click
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+
+      sound.playGunshot('pistol');
+      sound.playZombieSplatter();
+      fx.addBloodSplatter(x, y, { count: 12 });
+      fx.spawnDamageText(x, y, Math.floor(50 + Math.random() * 350), 'crit', true);
+    });
+
+    // Auto-Simulation loop
+    let simTimer = 0;
+    function runSimulation(dt) {
+      if (!simActive) return;
+      simTimer += dt;
+
+      if (simTimer > 0.22) {
+        simTimer = 0;
+        const progress = (performance.now() * 0.0003) % 1.0;
+        const pt = gameMap.getPointAlongPath(gameMap.pathA, progress);
+
+        // Minigun fire at target
+        const angle = Math.atan2(pt.y - 460, pt.x - 1160);
+        gameMap.setLastStandState(angle, true);
+        sound.playGunshot('gatling');
+        fx.createMuzzleFlash(1160, 460, angle, 20);
+        fx.createBulletCasing(1160, 460, angle, 'heavy');
+
+        // Target hit
+        fx.addBloodSplatter(pt.x, pt.y, { count: 8, dir: angle });
+        const dmg = Math.floor(80 + Math.random() * 320);
+        fx.spawnDamageText(pt.x, pt.y, dmg, dmg > 200 ? 'crit' : 'physical', dmg > 200);
+
+        // Random explosion
+        if (Math.random() < 0.2) {
+          sound.playExplosion(1.0);
+          fx.createExplosion(pt.x, pt.y, 40, { count: 20, hasGore: true });
+          fx.createZombieDismemberment(pt.x, pt.y, 4);
+        }
+      }
+    }
+
+    // Main Render Loop
+    function loop(time) {
+      const dt = Math.min(0.1, (time - lastTime) / 1000);
+      lastTime = time;
+
+      runSimulation(dt);
+      gameMap.update(dt);
+      fx.update(dt);
+
+      // Render Order:
+      // 1. Static & dynamic Map Background
+      gameMap.renderBackground(ctx);
+
+      // 2. Persistent Blood & Gore Decals
+      fx.renderGore(ctx);
+      fx.renderGroundDecals(ctx);
+
+      // 3. Active Particle Systems
+      fx.renderParticles(ctx);
+
+      // 4. Foreground Map Elements (Overhead Archways)
+      gameMap.renderForeground(ctx);
+
+      // 5. Retro Floating Damage Numbers
+      fx.renderText(ctx);
+
+      // 6. MiniMap in bottom-right
+      gameMap.renderMiniMap(ctx, 1020, 580, 120, 80, [{ x: 560, y: 380 }, { x: 715, y: 400 }], [{ x: 475, y: 215 }]);
+
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zombie Tower Defense - Retro Apocalypse</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Outer Responsive Cabinet Viewport -->
+  <div id="cabinet-viewport">
+    <div id="cabinet-frame">
+      <div class="hazard-trim hazard-top"></div>
+
+      <!-- Main Game Canvas (1280x720 native resolution) -->
+      <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+      <!-- UI Overlay Layer -->
+      <div id="uiLayer">
+
+        <!-- Top-Left HUD Matching Screenshot -->
+        <div class="hud-box interactive" id="hudBox">
+          <div class="hud-line">
+            <span class="hud-label">WAVE</span>
+            <span class="hud-value"><span id="hudWave">24</span>/<span id="hudMaxWaves">40</span></span>
+          </div>
+          <div class="hud-line">
+            <span class="hud-label">SCORE:</span>
+            <span class="hud-value" id="hudScore">78500</span>
+          </div>
+          <div class="hud-line">
+            <span class="hud-label">ZOMBIES:</span>
+            <span class="hud-value" id="hudZombies">450</span>
+          </div>
+          <div class="hud-line hud-resources">
+            <span class="hud-label">RESOURCES:</span>
+            <span class="hud-value">
+              <span id="hudGold" class="gold-val">2450 G</span> / <span id="hudEnergy" class="energy-val">120 E</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Top-Right Controls Matching Screenshot -->
+        <div class="top-controls interactive" id="topControls">
+          <!-- Fast Forward Button -->
+          <button id="btnSpeed" class="retro-ctrl-btn" title="Fast Forward (Hotkey: F)">
+            <span>&gt;&gt;</span><span id="speedIndicator" class="btn-subtext">1x</span>
+          </button>
+          <!-- Pause Button -->
+          <button id="btnPause" class="retro-ctrl-btn" title="Pause / Resume (Hotkey: Space)">
+            <span id="pauseIcon">||</span>
+          </button>
+          <!-- Audio Mute Toggle -->
+          <button id="btnAudio" class="retro-ctrl-btn" title="Toggle Sound (Hotkey: M)">
+            <span id="audioIcon">🔊</span>
+          </button>
+          <!-- CRT Scanline Toggle -->
+          <button id="btnCrt" class="retro-ctrl-btn" title="Toggle CRT Scanlines">
+            <span style="font-size: 8px;">CRT</span>
+          </button>
+        </div>
+
+        <!-- Survivor Base & Last Stand Overcharge Widget (Right Battlefield) -->
+        <div class="last-stand-widget interactive" id="lastStandWidget">
+          <div class="last-stand-title-group">
+            <div class="last-stand-title">LAST STAND TOWER</div>
+            <div class="survivor-base-title">SURVIVOR BASE</div>
+          </div>
+          <div class="base-hp-bar-container">
+            <div class="base-hp-fill" id="baseHpFill" style="width: 100%;"></div>
+            <div class="base-hp-text">HOME DEFENSE - HP: <span id="baseHpText">100/100</span></div>
+          </div>
+          <button id="btnOvercharge" class="overcharge-btn" title="Apocalypse Shockwave (Hotkey: E)">
+            <div>⚡ OVERCHARGE</div>
+            <div class="oc-cost">50 E - APOCALYPSE BLAST</div>
+          </button>
+        </div>
+
+        <!-- Bottom Retro Metal Panel Matching Screenshot -->
+        <div class="bottom-panel interactive" id="bottomPanel">
+          
+          <!-- Left: 6 Tower Selection Cards -->
+          <div class="tower-cards-container" id="towerCardsContainer">
+
+            <!-- Card 1: Gunner Nest -->
+            <div class="tower-card" data-tower="gunner" data-index="0" title="Gunner Nest (Key 1)">
+              <span class="card-hotkey">1</span>
+              <div class="card-header">GUNNER NEST</div>
+              <div class="card-body">
+                <div class="card-icon-wrapper">
+                  <svg class="card-icon-svg" viewBox="0 0 32 32">
+                    <rect x="4" y="20" width="24" height="10" fill="#6d5c4b" stroke="#2c2217" stroke-width="1"/>
+                    <rect x="6" y="22" width="10" height="6" fill="#84715c"/>
+                    <rect x="18" y="22" width="8" height="6" fill="#7a6753"/>
+                    <circle cx="16" cy="14" r="5" fill="#4d613e" stroke="#283321" stroke-width="1"/>
+                    <rect x="13" y="16" width="6" height="3" fill="#dfb382"/>
+                    <rect x="18" y="14" width="10" height="3" fill="#2c2d30"/>
+                    <rect x="25" y="13" width="3" height="5" fill="#505459"/>
+                  </svg>
+                </div>
+                <div class="card-badges">
+                  <div class="badge-sub">+</div>
+                  <div class="badge-sub badge-arrows">^^</div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-cost">280 G</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 2: Archer Tower -->
+            <div class="tower-card" data-tower="archer" data-index="1" title="Archer Tower (Key 2)">
+              <span class="card-hotkey">2</span>
+              <div class="card-header">ARCHER TOWER</div>
+              <div class="card-body">
+                <div class="card-icon-wrapper">
+                  <svg class="card-icon-svg" viewBox="0 0 32 32">
+                    <rect x="8" y="18" width="16" height="12" fill="#784f2b" stroke="#3d2612" stroke-width="1"/>
+                    <circle cx="16" cy="12" r="4" fill="#6d8350" stroke="#364227" stroke-width="1"/>
+                    <path d="M 12,6 Q 8,14 12,22" stroke="#d4a359" stroke-width="2" fill="none"/>
+                    <line x1="12" y1="6" x2="12" y2="22" stroke="#e8e8e8" stroke-width="1"/>
+                    <line x1="8" y1="14" x2="24" y2="14" stroke="#d4a359" stroke-width="1.5"/>
+                    <polygon points="24,12 28,14 24,16" fill="#888"/>
+                  </svg>
+                </div>
+                <div class="card-badges">
+                  <div class="badge-sub">🏹</div>
+                  <div class="badge-sub badge-arrows">^^</div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-cost">350 G</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 3: Rocket Launcher -->
+            <div class="tower-card" data-tower="rocket" data-index="2" title="Rocket Launcher (Key 3)">
+              <span class="card-hotkey">3</span>
+              <div class="card-header">ROCKET LAUNCHER</div>
+              <div class="card-body">
+                <div class="card-icon-wrapper">
+                  <svg class="card-icon-svg" viewBox="0 0 32 32">
+                    <polygon points="6,28 16,18 26,28" fill="#3a4045" stroke="#1c2024" stroke-width="1"/>
+                    <rect x="8" y="10" width="16" height="8" rx="2" transform="rotate(-20 16 14)" fill="#4f5945" stroke="#252b20" stroke-width="1"/>
+                    <polygon points="23,4 28,8 24,13" fill="#b8382c"/>
+                    <circle cx="10" cy="19" r="2" fill="#e8a838"/>
+                  </svg>
+                </div>
+                <div class="card-badges">
+                  <div class="badge-sub">🚀</div>
+                  <div class="badge-sub badge-arrows">^^</div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-cost">550 G</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 4: Flametrost -->
+            <div class="tower-card" data-tower="flame" data-index="3" title="Flametrost (Key 4)">
+              <span class="card-hotkey">4</span>
+              <div class="card-header">FLAMETROST</div>
+              <div class="card-body">
+                <div class="card-icon-wrapper">
+                  <svg class="card-icon-svg" viewBox="0 0 32 32">
+                    <rect x="7" y="18" width="18" height="10" rx="2" fill="#4a3e35" stroke="#231b14" stroke-width="1"/>
+                    <path d="M 12,18 Q 10,8 14,4 Q 16,10 18,7 Q 21,12 18,18 Z" fill="#ff7700"/>
+                    <path d="M 13,18 Q 12,12 15,9 Q 16,13 17,11 Q 19,14 17,18 Z" fill="#ffdd33"/>
+                    <circle cx="21" cy="9" r="2" fill="#00d9ff"/>
+                  </svg>
+                </div>
+                <div class="card-badges">
+                  <div class="badge-sub">🔥</div>
+                  <div class="badge-sub" style="color:#ff9900;">⚡</div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-cost">1250 G</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill fill-orange" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 5: Tesla Coil -->
+            <div class="tower-card" data-tower="tesla" data-index="4" title="Tesla Coil (Key 5)">
+              <span class="card-hotkey">5</span>
+              <div class="card-header">TESLA COIL</div>
+              <div class="card-body">
+                <div class="card-icon-wrapper">
+                  <svg class="card-icon-svg" viewBox="0 0 32 32">
+                    <rect x="8" y="24" width="16" height="6" fill="#323846" stroke="#171b24" stroke-width="1"/>
+                    <ellipse cx="16" cy="22" rx="7" ry="2" fill="#4d6182"/>
+                    <ellipse cx="16" cy="18" rx="6" ry="2" fill="#5874a1"/>
+                    <ellipse cx="16" cy="14" rx="5" ry="2" fill="#698ec7"/>
+                    <circle cx="16" cy="8" r="4" fill="#00e5ff" stroke="#ffffff" stroke-width="1"/>
+                    <path d="M 10,8 L 6,5 M 22,8 L 26,5 M 16,3 L 16,0" stroke="#00e5ff" stroke-width="1.5"/>
+                  </svg>
+                </div>
+                <div class="card-badges">
+                  <div class="badge-sub" style="color:#00e5ff;">⚡</div>
+                  <div class="badge-sub" style="color:#00e5ff;">⚡</div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-cost">650 G</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill fill-cyan" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Card 6: Mortar -->
+            <div class="tower-card" data-tower="mortar" data-index="5" title="Mortar (Key 6)">
+              <span class="card-hotkey">6</span>
+              <div class="card-header">MORTAR</div>
+              <div class="card-body">
+                <div class="card-icon-wrapper">
+                  <svg class="card-icon-svg" viewBox="0 0 32 32">
+                    <ellipse cx="16" cy="25" rx="12" ry="5" fill="#352e26" stroke="#1a1612" stroke-width="1"/>
+                    <rect x="12" y="10" width="8" height="16" rx="2" transform="rotate(-30 16 18)" fill="#4f4940" stroke="#26221c" stroke-width="1.5"/>
+                    <ellipse cx="11" cy="9" rx="4" ry="2" transform="rotate(-30 11 9)" fill="#1c1915"/>
+                    <circle cx="23" cy="21" r="3" fill="#dfb382"/>
+                    <rect x="22" y="24" width="4" height="4" fill="#4d613e"/>
+                  </svg>
+                </div>
+                <div class="card-badges">
+                  <div class="badge-sub">💣</div>
+                  <div class="badge-sub badge-arrows">💥</div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-cost">2150 G</span>
+              </div>
+              <div class="card-progress-bar">
+                <div class="card-progress-fill fill-yellow" style="width: 70%;"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Real-time Minimap & Big Retro NEXT WAVE Button -->
+          <div class="bottom-right-group">
+            
+            <!-- Real-time Minimap Radar Screen -->
+            <div class="minimap-panel" id="minimapPanel" title="Tactical Radar (Entries, Towers, Zombies)">
+              <canvas id="minimapCanvas" width="154" height="98"></canvas>
+              <div class="radar-scan-line"></div>
+              <div class="minimap-tag">RADAR 01</div>
+            </div>
+
+            <!-- Big Retro NEXT WAVE Button Matching Screenshot -->
+            <button id="btnNextWave" class="next-wave-btn" title="Launch Next Wave (Hotkey: N)">
+              <span>NEXT WAVE</span>
+              <span id="waveStatusSub" class="wave-subtext">WAVE 25 (N)</span>
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- Dynamic Tower Hover Tooltip -->
+        <div class="tower-tooltip" id="towerTooltip">
+          <div class="tooltip-title">
+            <span id="ttName">GUNNER NEST</span>
+            <span id="ttCost" class="gold-val">280 G</span>
+          </div>
+          <div class="tooltip-stat-row">
+            <span>DAMAGE:</span><span id="ttDmg" class="tooltip-stat-val">24</span>
+          </div>
+          <div class="tooltip-stat-row">
+            <span>FIRE RATE:</span><span id="ttRate" class="tooltip-stat-val">0.18s</span>
+          </div>
+          <div class="tooltip-stat-row">
+            <span>RANGE:</span><span id="ttRange" class="tooltip-stat-val">180 px</span>
+          </div>
+          <div class="tooltip-stat-row">
+            <span>TYPE:</span><span id="ttType" class="tooltip-stat-val">Rapid Ballistic</span>
+          </div>
+          <div class="tooltip-desc" id="ttDesc">
+            Rapid single-target gunfire. High rate of fire to suppress fast runners.
+          </div>
+        </div>
+
+        <!-- Tower Upgrade & Sell Modal Overlay (When clicking existing tower) -->
+        <div class="tower-modal interactive" id="towerModal">
+          <div class="modal-header">
+            <div>
+              <div class="modal-title" id="modalTowerTitle">GUNNER NEST</div>
+              <div class="modal-level-badge" id="modalLevelBadge">LVL 1</div>
+            </div>
+            <button class="modal-close-btn" id="modalCloseBtn" title="Close (Esc)">[X]</button>
+          </div>
+          <div class="modal-stats">
+            <div class="modal-stat-line">
+              <span>DAMAGE:</span>
+              <span><span id="modalCurrentDmg">24</span> <span class="stat-upgrade-preview" id="modalNextDmg">+18</span></span>
+            </div>
+            <div class="modal-stat-line">
+              <span>RANGE:</span>
+              <span><span id="modalCurrentRange">180</span> <span class="stat-upgrade-preview" id="modalNextRange">+35</span></span>
+            </div>
+            <div class="modal-stat-line">
+              <span>FIRE RATE:</span>
+              <span><span id="modalCurrentRate">0.18s</span> <span class="stat-upgrade-preview" id="modalNextRate">-0.03s</span></span>
+            </div>
+            <div class="modal-stat-line">
+              <span>KILLS:</span>
+              <span id="modalKills" style="color:#ff8888;">0</span>
+            </div>
+            <div class="modal-stat-line" style="margin-top: 4px; border-top: 1px dashed #3f352a; padding-top: 4px;">
+              <span>TARGETING:</span>
+              <span id="modalTargetMode" style="color:var(--gold-val); cursor:pointer;" title="Click to cycle targeting mode">FIRST ▶</span>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="modal-btn btn-upgrade" id="modalUpgradeBtn">
+              <span>UPGRADE</span>
+              <span id="modalUpgradeCost" style="color:var(--gold-val);">220 G</span>
+            </button>
+            <button class="modal-btn btn-sell" id="modalSellBtn">
+              <span>SELL</span>
+              <span id="modalSellRefund" style="color:#ffccaa;">+196 G</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Toast Notification Banner -->
+        <div class="toast-banner" id="toastBanner">MESSAGE</div>
+
+        <!-- Game Over / Victory Modal -->
+        <div class="game-state-modal interactive" id="gameStateModal">
+          <div class="state-title" id="stateTitle">SURVIVORS VICTORIOUS!</div>
+          <div class="state-stats" id="stateStats">
+            WAVE COMPLETED: 40/40<br>
+            TOTAL SCORE: 125,400<br>
+            ZOMBIES SLAIN: 1,840
+          </div>
+          <button class="btn-restart" id="btnRestart">PLAY AGAIN</button>
+        </div>
+
+      </div>
+
+      <!-- Scanline CRT Overlay -->
+      <div id="crtOverlay"></div>
+
+      <div class="hazard-trim hazard-bottom"></div>
+    </div>
+  </div>
+
+  <!-- Scripts in dependency order -->
+  <script src="js/engine.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/zombies.js"></script>
+  <script src="js/towers.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
