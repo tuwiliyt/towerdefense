@@ -987,20 +987,20 @@ class GameMap {
     });
 
     // Reinforced Steel Gate (Ground Floor)
-    const gx = hx + hw/2 - 25;
-    const gy = hy + 90;
+    const gateX = hx + hw/2 - 25;
+    const gateY = hy + 90;
     ctx.fillStyle = '#2d333b';
-    ctx.fillRect(gx, gy, 50, 70);
+    ctx.fillRect(gateX, gateY, 50, 70);
     ctx.fillStyle = '#444c56';
-    ctx.fillRect(gx - 4, gy + 20, 58, 10);
-    ctx.fillRect(gx - 4, gy + 40, 58, 10);
+    ctx.fillRect(gateX - 4, gateY + 20, 58, 10);
+    ctx.fillRect(gateX - 4, gateY + 40, 58, 10);
     
     // Warning Sign above Gate
     ctx.fillStyle = '#d32f2f';
-    ctx.fillRect(gx - 10, gy - 12, 70, 16);
+    ctx.fillRect(gateX - 10, gateY - 12, 70, 16);
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 10px monospace';
-    ctx.fillText("KEEP OUT", gx - 3, gy - 1);
+    ctx.fillText("KEEP OUT", gateX - 3, gateY - 1);
 
     // Radio Antenna on Roof
     ctx.strokeStyle = '#333';
