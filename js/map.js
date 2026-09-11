@@ -48,63 +48,71 @@ class GameMap {
     };
 
     // Entry Waypoints & Archways matching screenshot
-    this.entryA = { x: 0, y: 165, archX: 190, archY: 165 };
-    this.entryB = { x: 0, y: 495, archX: 175, archY: 495 };
+    this.entryA = { x: 0, y: 170, archX: 130, archY: 170 };
+    this.entryB = { x: 0, y: 455, archX: 125, archY: 455 };
 
-    // Common Serpentine Path
-    this.waypointsCommon = [
-      { x: 360, y: 350 },
-      { x: 410, y: 260 },
-      { x: 445, y: 195 },
-      { x: 505, y: 195 },
-      { x: 550, y: 250 },
-      { x: 560, y: 380 },
-      { x: 560, y: 470 },
-      { x: 620, y: 525 },
-      { x: 690, y: 510 },
-      { x: 715, y: 400 },
-      { x: 730, y: 280 },
-      { x: 775, y: 215 },
-      { x: 840, y: 215 },
-      { x: 885, y: 265 },
-      { x: 915, y: 375 },
-      { x: 945, y: 445 },
-      { x: 1040, y: 445 } // Survivor Base Gate
-    ];
-
-    // Complete Path A
+    // Complete Path A (Matches DEFAULT_WAYPOINTS_ENTRY_A in zombies.js)
     this.pathA = [
-      { x: -30, y: 165 },
-      { x: 70, y: 165 },
-      { x: 190, y: 165 },
-      { x: 275, y: 200 },
-      { x: 285, y: 310 },
-      { x: 300, y: 380 },
-      ...this.waypointsCommon
+      { x: -30, y: 170 }, // off-screen start
+      { x: 130, y: 170 }, // Entry A gate arch
+      { x: 220, y: 175 },
+      { x: 320, y: 195 },
+      { x: 375, y: 240 },
+      { x: 365, y: 340 },
+      { x: 380, y: 435 },
+      { x: 440, y: 490 }, // Junction merge
+      { x: 460, y: 430 }, // Heading up central spine
+      { x: 450, y: 310 },
+      { x: 455, y: 215 },
+      { x: 530, y: 165 }, // Top curve around upper bunker
+      { x: 625, y: 175 },
+      { x: 690, y: 235 }, // Downhill into Tesla/Mortar killzone
+      { x: 710, y: 325 },
+      { x: 720, y: 420 }, // Sandbag corner
+      { x: 795, y: 455 },
+      { x: 900, y: 425 }, // Approaching survivor fortress gate
+      { x: 1010, y: 380 },
+      { x: 1090, y: 360 }  // Breach Base Target
     ];
 
-    // Complete Path B
+    // Complete Path B (Matches DEFAULT_WAYPOINTS_ENTRY_B in zombies.js)
     this.pathB = [
-      { x: -30, y: 495 },
-      { x: 70, y: 495 },
-      { x: 175, y: 495 },
-      { x: 255, y: 460 },
-      { x: 300, y: 380 },
-      ...this.waypointsCommon
+      { x: -30, y: 455 }, // off-screen start
+      { x: 125, y: 455 }, // Entry B gate arch
+      { x: 205, y: 465 },
+      { x: 275, y: 480 }, // Past abandoned tank
+      { x: 345, y: 515 },
+      { x: 420, y: 515 },
+      { x: 440, y: 490 }, // Junction merge
+      { x: 460, y: 430 },
+      { x: 450, y: 310 },
+      { x: 455, y: 215 },
+      { x: 530, y: 165 },
+      { x: 625, y: 175 },
+      { x: 690, y: 235 },
+      { x: 710, y: 325 },
+      { x: 720, y: 420 },
+      { x: 795, y: 455 },
+      { x: 900, y: 425 },
+      { x: 1010, y: 380 },
+      { x: 1090, y: 360 }
     ];
 
     // Canonical Tower Build Spots
     this.buildSpots = [
-      { id: 'spot_1', x: 360, y: 340, radius: 26, name: 'Gunner Post 1', occupied: false },
-      { id: 'spot_2', x: 475, y: 215, radius: 26, name: 'Gunner Post 2', occupied: false },
-      { id: 'spot_3', x: 475, y: 475, radius: 26, name: 'Gunner Post 3', occupied: false },
-      { id: 'spot_4', x: 605, y: 140, radius: 26, name: 'Sandbag Ridge Nest', occupied: false },
-      { id: 'spot_5', x: 605, y: 440, radius: 28, name: 'Mortar Emplacement 1', occupied: false },
-      { id: 'spot_6', x: 605, y: 610, radius: 26, name: 'Tesla Coil Pedestal', occupied: false },
-      { id: 'spot_7', x: 800, y: 605, radius: 28, name: 'Mortar Emplacement 2', occupied: false },
-      { id: 'spot_8', x: 630, y: 350, radius: 26, name: 'Center Bunker', occupied: false },
-      { id: 'spot_9', x: 805, y: 350, radius: 26, name: 'Hairpin Bunker', occupied: false },
-      { id: 'spot_10', x: 990, y: 200, radius: 26, name: 'Compound Outer Wall', occupied: false }
+      { id: 'spot_1', x: 300, y: 340, radius: 26, name: 'Gunner Post 1', occupied: false },
+      { id: 'spot_2', x: 510, y: 240, radius: 26, name: 'Gunner Post 2', occupied: false },
+      { id: 'spot_3', x: 400, y: 550, radius: 26, name: 'Gunner Post 3', occupied: false },
+      { id: 'spot_4', x: 600, y: 110, radius: 26, name: 'Sandbag Ridge Nest', occupied: false },
+      { id: 'spot_5', x: 640, y: 300, radius: 28, name: 'Mortar Emplacement 1', occupied: false },
+      { id: 'spot_6', x: 650, y: 430, radius: 26, name: 'Tesla Coil Pedestal', occupied: false },
+      { id: 'spot_7', x: 800, y: 530, radius: 28, name: 'Mortar Emplacement 2', occupied: false },
+      { id: 'spot_8', x: 740, y: 240, radius: 26, name: 'Center Bunker', occupied: false },
+      { id: 'spot_9', x: 860, y: 350, radius: 26, name: 'Hairpin Bunker', occupied: false },
+      { id: 'spot_10', x: 980, y: 290, radius: 26, name: 'Compound Outer Wall', occupied: false },
+      { id: 'spot_11', x: 320, y: 580, radius: 26, name: 'Path B Guard', occupied: false },
+      { id: 'spot_12', x: 240, y: 400, radius: 26, name: 'Path B Inner', occupied: false },
+      { id: 'spot_13', x: 250, y: 250, radius: 26, name: 'Path A Approach', occupied: false }
     ];
 
     // Pre-calculate path lengths
