@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Binaries & Executables
+cloudflared
+cloudflared.exe
+
+# Runtime Logs & PIDs
+*.log
+*.pid
+tunnel_url.txt
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

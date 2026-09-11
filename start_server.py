@@ -4,7 +4,8 @@ import re
 import sys
 import os
 
-os.chdir('/content/zombie_tower_defense')
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(SCRIPT_DIR)
 
 # 1. Start python HTTP server
 http_proc = subprocess.Popen(
@@ -15,9 +16,13 @@ http_proc = subprocess.Popen(
 )
 print(f"[SERVER] HTTP server started on http://127.0.0.1:8000 (PID: {http_proc.pid})", flush=True)
 
-# 2. Start cloudflared tunnel
+# 2. Start cloudflared tunnel (if cloudflared binary exists)
+cf_binary = os.path.join(SCRIPT_DIR, 'cloudflared')
+if not os.path.exists(cf_binary):
+    cf_binary = 'cloudflared'
+
 cf_proc = subprocess.Popen(
-    ['/content/zombie_tower_defense/cloudflared', 'tunnel', '--url', 'http://127.0.0.1:8000'],
+    [cf_binary, 'tunnel', '--url', 'http://127.0.0.1:8000'],
     stdout=subprocess.PIPE,
     stderr=subprocess.STDOUT,
     text=True
@@ -35,7 +40,7 @@ while time.time() - start_time < 30:
         match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
         if match:
             tunnel_url = match.group(0)
-            with open('/content/zombie_tower_defense/tunnel_url.txt', 'w') as f:
+            with open(os.path.join(SCRIPT_DIR, 'tunnel_url.txt'), 'w') as f:
                 f.write(tunnel_url + '\n')
             print("\n" + "="*60, flush=True)
             print(f"CLOUDFLARE_TUNNEL_URL: {tunnel_url}", flush=True)
